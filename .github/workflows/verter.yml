@@ -1,0 +1,83 @@
+name: School 21 Verter Auto-Checker
+
+on:
+  push:
+    branches:
+      - develop
+      - 'submissions/**'
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  verter-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v3
+
+    - name: 🔧 Setup C compiler
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc make valgrind
+        gcc --version
+
+    - name: 📁 Create build directory
+      run: mkdir -p build test_results
+
+    - name: 🧪 Run Verter Auto-Tests
+      id: run_tests
+      run: |
+        chmod +x test_runner.sh
+        ./test_runner.sh 2>&1 | tee test_output.log
+        exit_code=${PIPESTATUS[0]}
+        echo "exit_code=$exit_code" >> $GITHUB_OUTPUT
+        exit $exit_code
+      continue-on-error: true
+
+    - name: 📊 Display Test Results
+      if: always()
+      run: |
+        echo "================================="
+        echo "       VERTER TEST RESULTS       "
+        echo "================================="
+        cat test_output.log | tail -30
+
+    - name: 📝 Create detailed report
+      if: always()
+      run: |
+        echo "# 🎓 School 21 Verter Test Report" > test_report.md
+        echo "" >> test_report.md
+        echo "**Branch:** \`${{ github.ref_name }}\`" >> test_report.md
+        echo "**Commit:** \`${{ github.sha }}\`" >> test_report.md
+        echo "**Date:** $(date)" >> test_report.md
+        echo "" >> test_report.md
+        echo "## 📊 Test Results" >> test_report.md
+        echo "" >> test_report.md
+        echo "\`\`\`" >> test_report.md
+        tail -50 test_output.log >> test_report.md
+        echo "\`\`\`" >> test_report.md
+
+    - name: 📤 Upload test results
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: verter-test-results
+        path: |
+          test_output.log
+          test_report.md
+          test_results/
+        retention-days: 30
+
+    - name: ✅ Check test status
+      if: steps.run_tests.outputs.exit_code != '0'
+      run: |
+        echo "❌ Some tests failed. Check the detailed report above."
+        echo "📥 Download artifacts to see full test results."
+        exit 1
+
+    - name: 🎉 All tests passed
+      if: steps.run_tests.outputs.exit_code == '0'
+      run: |
+        echo "✅ All tests passed! Great job! 🎓"

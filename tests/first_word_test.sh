@@ -1,13 +1,16 @@
 #!/bin/bash
 
 # Test for first_word
-SOURCE="./answers/first_word.c"
+
+# Use dynamic source file if provided, otherwise use default
+SOURCE="${CURRENT_SOURCE_FILE:-./answers/first_word.c}"
 BINARY="./build/first_word"
 
 # Compile
 gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
-    echo "Compilation failed"
+    echo "Compilation failed:"
+    gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>&1
     exit 1
 fi
 

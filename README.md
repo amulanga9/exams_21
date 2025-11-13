@@ -1,24 +1,303 @@
-# School 42 Exam Simulator: Rank 02
-This interactive coding challenge spans across four levels of increasing difficulty. In every level, a question, randomly selected from a curated pool. 
+# 🎓 School 21 Exam Simulator with Verter Auto-Checker
 
-As you ascend from one level to the next, you'll get a programming problem that tests your understanding of C programming. With each click of the `Next Level` button, you aren't merely moving to a new level, but also stepping into a new realm of complexity and learning.
+Интерактивное веб-приложение для подготовки к экзамену School 42/21 Rank 02 + **автоматическая система проверки как Verter**.
 
-After completing all four levels, continue by clicking the `Start Over` button. This will allow you to revisit the exam, solidify your knowledge, and solve more tasks. It's not just an exam preparation tool, but a companion in your quest for mastery in C programming.
+![School 21](https://img.shields.io/badge/School-21-blue)
+![Level](https://img.shields.io/badge/Level-1--4-green)
+![Tests](https://img.shields.io/badge/Tests-56-brightgreen)
+![Auto-Check](https://img.shields.io/badge/Auto--Check-Verter--like-orange)
 
-## Getting Started
+## ✨ Особенности
 
-### Prerequisites
+### 📚 Учебное веб-приложение
+- **50 заданий** по программированию на C
+- **4 уровня сложности** (от базового до эксперта)
+- **Интерактивный интерфейс** на Streamlit
+- **Примеры решений** для обучения
 
-- Python 3.8 or higher
-- Streamlit: `pip install streamlit`
+### 🤖 Автоматическая проверка (Verter-style)
+- ✅ **56 автоматических тестов**
+- ✅ **GitHub Actions** - автоматический запуск при пуше
+- ✅ **Детальная диагностика** ошибок
+- ✅ **Цветной вывод** результатов
+- ✅ **Логирование** всех проверок
 
-### Running the Application
+---
 
-To start the application, run the following command in your terminal:
+## 🚀 Быстрый старт
+
+### Для студентов (проверка заданий)
+
+1. **Клонируйте репозиторий:**
+```bash
+git clone <your-repo-url>
+cd exams_21
+git checkout -b develop
 ```
+
+2. **Прочитайте задание:**
+```bash
+cat tasks/first_word.txt
+```
+
+3. **Создайте решение:**
+```bash
+nano submissions/level_1/first_word.c
+```
+
+4. **Запустите локальную проверку:**
+```bash
+./test_runner.sh
+```
+
+5. **Запушьте на develop:**
+```bash
+git add submissions/level_1/first_word.c
+git commit -m "Add first_word solution"
+git push origin develop
+```
+
+6. **Проверьте результаты в GitHub Actions!**
+
+📖 **Подробная инструкция:** [STUDENT_WORKFLOW.md](STUDENT_WORKFLOW.md)
+
+### Для изучения (веб-приложение)
+
+```bash
+# Установка зависимостей
+pip install streamlit
+
+# Запуск приложения
 streamlit run app.py
 ```
+
+Откройте http://localhost:8501 в браузере.
+
 OR Check out the website: [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://42school-exam-simulator.streamlit.app)
 
-## License
-This project is licensed under the MIT License.
+---
+
+## 📁 Структура проекта
+
+```
+exams_21/
+├── 📂 submissions/           # ← Ваши решения здесь!
+│   ├── level_1/             # Level 1 задания
+│   ├── level_2/             # Level 2 задания
+│   ├── level_3/             # Level 3 задания
+│   └── level_4/             # Level 4 задания
+│
+├── 📂 tasks/                # Описания заданий
+│   ├── first_word.txt
+│   ├── fizzbuzz.txt
+│   └── ... (50 заданий)
+│
+├── 📂 answers/              # Референсные решения
+│   ├── first_word.c
+│   └── ... (56 решений)
+│
+├── 📂 tests/                # Тестовые скрипты
+│   ├── first_word_test.sh
+│   └── ... (56 тестов)
+│
+├── 📂 .github/workflows/    # GitHub Actions
+│   └── verter.yml          # Автоматическая проверка
+│
+├── 🔧 test_runner.sh        # Главный скрипт тестирования
+├── 📱 app.py                # Streamlit веб-приложение
+├── 📘 STUDENT_WORKFLOW.md   # Подробное руководство
+└── 📖 README.md             # Этот файл
+```
+
+---
+
+## 🎯 Покрытие тестами
+
+### Level 1 - Базовый (12 заданий)
+`first_word` `fizzbuzz` `ft_strcpy` `ft_strlen` `ft_swap` `ft_putstr` `repeat_alpha` `rev_print` `rot_13` `rotone` `search_and_replace` `ulstr`
+
+### Level 2 - Средний (19 заданий)
+`alpha_mirror` `do_op` `ft_atoi` `ft_strcmp` `ft_strcspn` `ft_strdup` `ft_strpbrk` `ft_strrev` `ft_strspn` `inter` `is_power_of_2` `last_word` `max` `print_bits` `reverse_bits` `snake_to_camel` `swap_bits` `union` `wdmatch`
+
+### Level 3 - Продвинутый (15 заданий)
+`add_prime_sum` `epur_str` `expand_str` `ft_atoi_base` `ft_list_size` `ft_range` `ft_rrange` `hidenp` `lcm` `paramsum` `pgcd` `print_hex` `rstr_capitalizer` `str_capitalizer` `tab_mult`
+
+### Level 4 - Эксперт (10 заданий)
+`flood_fill` `fprime` `ft_itoa` `ft_list_foreach` `ft_list_remove_if` `ft_split` `rev_wstr` `rostring` `sort_int_tab` `sort_list`
+
+**Всего: 56 заданий и 56 тестов**
+
+---
+
+## 🧪 Система тестирования
+
+### Локальный запуск
+
+```bash
+# Запустить все тесты
+./test_runner.sh
+
+# Запустить один тест
+./tests/first_word_test.sh
+```
+
+### Автоматическая проверка (GitHub Actions)
+
+При каждом пуше на `develop`:
+1. Автоматически компилируется ваш код
+2. Запускаются все тесты
+3. Генерируется детальный отчет
+4. Результаты доступны во вкладке **Actions**
+
+### Пример вывода
+
+```
+╔═══════════════════════════════════════════════════════╗
+║       🎓 School 21 Verter Auto-Checker 🎓        ║
+╚═══════════════════════════════════════════════════════╝
+
+Testing: first_word [student]
+  Source: submissions/level_1/first_word.c
+  ✓ PASSED
+
+Testing: fizzbuzz [student]
+  Source: submissions/level_1/fizzbuzz.c
+  ✓ PASSED
+
+╔═══════════════════════════════════════════════════════╗
+║                   Test Summary                        ║
+╚═══════════════════════════════════════════════════════╝
+
+  Total tests:  56
+  ✓ Passed:     54
+  ✗ Failed:     2
+  ⊘ Skipped:    0
+
+  Success rate: 96%
+```
+
+---
+
+## 📊 Возможности системы проверки
+
+- ✅ Компиляция с флагами `-Wall -Wextra -Werror`
+- ✅ Проверка вывода программы
+- ✅ Сравнение с стандартными функциями C
+- ✅ Тестирование граничных случаев
+- ✅ Детальная диагностика ошибок
+- ✅ Цветной терминальный вывод
+- ✅ Логирование результатов
+- ✅ Автоматический запуск через GitHub Actions
+
+---
+
+## 📝 Workflow для студента
+
+1. **Читаете задание** из `tasks/`
+2. **Пишете код** в `submissions/level_X/`
+3. **Тестируете локально** через `./test_runner.sh`
+4. **Коммитите и пушите** на `develop`
+5. **Проверяете результаты** в GitHub Actions
+
+Подробнее: [STUDENT_WORKFLOW.md](STUDENT_WORKFLOW.md)
+
+---
+
+## 🔧 Требования
+
+### Для автотестов:
+- GCC compiler
+- Bash
+- Git
+
+### Для веб-приложения:
+- Python 3.8+
+- Streamlit
+
+---
+
+## 💡 Полезные команды
+
+```bash
+# Локальное тестирование
+./test_runner.sh
+
+# Показать только ошибки
+./test_runner.sh 2>&1 | grep -A 10 "FAILED"
+
+# Посмотреть лог
+cat test_results/test_results_*.log
+
+# Запустить веб-приложение
+streamlit run app.py
+
+# Проверить задание
+cat tasks/first_word.txt
+```
+
+---
+
+## 🐛 Отладка
+
+### Ошибка компиляции?
+```bash
+# Проверьте синтаксис
+gcc -Wall -Wextra -Werror submissions/level_1/first_word.c
+```
+
+### Неправильный вывод?
+```bash
+# Запустите программу вручную
+gcc submissions/level_1/first_word.c -o test
+./test "hello world"
+```
+
+### Файл не найден?
+```bash
+# Проверьте путь и имя
+ls -la submissions/level_1/
+```
+
+---
+
+## 📚 Документация
+
+- [STUDENT_WORKFLOW.md](STUDENT_WORKFLOW.md) - Подробное руководство для студентов
+- [TESTING_README.md](TESTING_README.md) - Документация по тестовой системе
+- [tasks/](tasks/) - Описания всех заданий
+
+---
+
+## 🤝 Вклад
+
+Система создана для помощи студентам School 21 в подготовке к экзаменам.
+
+Если нашли ошибку или хотите улучшить тесты - welcome!
+
+---
+
+## 📜 Лицензия
+
+MIT License
+
+---
+
+## 🎓 Для студентов School 21
+
+Эта система максимально приближена к работе **Verter** - автоматической системы проверки School 21.
+
+**Рекомендации:**
+- Используйте систему для практики перед экзаменом
+- Изучайте ошибки и исправляйте их
+- Не копируйте готовые решения - учитесь!
+- Тесты покрывают основные случаи, но не гарантируют 100% на экзамене
+
+---
+
+<div align="center">
+
+**🚀 Удачи на экзаменах! May the code be with you! 🚀**
+
+[⭐ Star this repo](https://github.com/yourusername/exams_21) если оно вам помогло!
+
+</div>
