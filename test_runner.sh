@@ -273,6 +273,52 @@ test_level4() {
     done
 }
 
+# Function to test Piscine tasks
+test_piscine() {
+    log_print "${BLUE}╔═══════════════════════════════════════════════════════╗${NC}"
+    log_print "${BLUE}║           Testing Piscine Exercises (stdin)          ║${NC}"
+    log_print "${BLUE}╚═══════════════════════════════════════════════════════╝${NC}"
+    log_print ""
+
+    # Test Ex_01 tasks
+    local piscine_tests=(
+        "ex_01_01:tests_piscine/ex_01_01_test.sh"
+        "ex_01_05:tests_piscine/ex_01_05_test.sh"
+    )
+
+    for test_entry in "${piscine_tests[@]}"; do
+        IFS=':' read -r test_name test_script <<< "$test_entry"
+
+        if [ -f "$test_script" ]; then
+            TOTAL_TESTS=$((TOTAL_TESTS + 1))
+
+            log_print "${YELLOW}Testing: ${NC}${test_name} ${CYAN}[piscine]${NC}"
+
+            bash "$test_script" > "$BUILD_DIR/${test_name}_output.txt" 2>&1
+            local result=$?
+
+            if [ $result -eq 0 ]; then
+                log_print "  ${GREEN}✓ PASSED${NC}"
+                log_print ""
+                PASSED_TESTS=$((PASSED_TESTS + 1))
+            elif [ $result -eq 2 ]; then
+                log_print "  ${YELLOW}⊘ SKIPPED${NC} ${RED}(file not found)${NC}"
+                log_print ""
+                SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
+            else
+                log_print "  ${RED}✗ FAILED${NC}"
+                log_print "  ${RED}┌─ Error Details:${NC}"
+                while IFS= read -r line; do
+                    log_print "  ${RED}│${NC} $line"
+                done < "$BUILD_DIR/${test_name}_output.txt"
+                log_print "  ${RED}└────────────────${NC}"
+                log_print ""
+                FAILED_TESTS=$((FAILED_TESTS + 1))
+            fi
+        fi
+    done
+}
+
 # Function to print summary
 print_summary() {
     log_print ""
@@ -319,6 +365,9 @@ main() {
     test_level2
     test_level3
     test_level4
+
+    # Run piscine tests
+    test_piscine
 
     # Print summary
     print_summary
