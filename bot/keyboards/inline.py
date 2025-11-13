@@ -149,3 +149,45 @@ def get_invitation_response_keyboard(invitation_id: int) -> InlineKeyboardMarkup
         ]
     ]
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+# === КЛАВИАТУРЫ ДЛЯ TINDER-STYLE ПОИСКА ===
+
+def get_cofounder_search_keyboard(user_id: int, current_index: int = 0) -> InlineKeyboardMarkup:
+    """
+    Клавиатура для поиска соло-основателей
+
+    Args:
+        user_id: ID найденного пользователя
+        current_index: текущий индекс в списке найденных
+    """
+    keyboard = [
+        [InlineKeyboardButton(text="💬 Отправить запрос", callback_data=f"send_collab_{user_id}_{current_index}")],
+        [InlineKeyboardButton(text="👉 Следующий", callback_data=f"next_cofounder_{current_index}")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def get_participant_team_keyboard(team_id: int, current_index: int = 0) -> InlineKeyboardMarkup:
+    """
+    Клавиатура для Tinder-style просмотра команд
+
+    Args:
+        team_id: ID команды
+        current_index: текущий индекс в списке команд
+    """
+    keyboard = [
+        [
+            InlineKeyboardButton(text="✅ Интересно!", callback_data=f"interested_team_{team_id}_{current_index}"),
+            InlineKeyboardButton(text="❌ Пропустить", callback_data=f"skip_team_{current_index}")
+        ]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)
+
+
+def get_search_empty_keyboard() -> InlineKeyboardMarkup:
+    """Клавиатура для пустого результата поиска"""
+    keyboard = [
+        [InlineKeyboardButton(text="⏰ Подожду", callback_data="wait_notify")]
+    ]
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)

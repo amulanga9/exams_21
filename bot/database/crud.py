@@ -391,3 +391,158 @@ async def count_profile_views(session: AsyncSession, user_id: int) -> int:
         .where(Invitation.to_user_id == user_id)
     )
     return result.scalar()
+
+
+# ===== SEARCH FOR COFOUNDERS AND PARTICIPANTS =====
+
+def calculate_compatibility(user1: User, user2: User) -> int:
+    """
+    Рассчитать совместимость между двумя соло-основателями
+
+    Алгоритм:
+    - Разные навыки (Backend + Design) = 4 звезды
+    - Похожие идеи = +1 звезда
+    - Одинаковые навыки = 2 звезды
+
+    Returns:
+        Количество звезд от 1 до 5
+    """
+    stars = 2  # базовая совместимость
+
+    # Проверяем навыки
+    skill1 = user1.primary_skill or ""
+    skill2 = user2.primary_skill or ""
+
+    # Если навыки разные - это хорошо (дополняют друг друга)
+    if skill1 and skill2 and skill1.lower() != skill2.lower():
+        stars = 4
+
+    # Проверяем похожесть идей (простой check на общие слова)
+    idea1_what = (user1.idea_what or "").lower()
+    idea2_what = (user2.idea_what or "").lower()
+
+    # Ищем общие ключевые слова
+    common_keywords = ["образование", "доставка", "финансы", "здоровье", "edtech", "fintech", "healthtech", "foodtech"]
+    idea1_category = None
+    idea2_category = None
+
+    for keyword in common_keywords:
+        if keyword in idea1_what:
+            idea1_category = keyword
+        if keyword in idea2_what:
+            idea2_category = keyword
+
+    # Если идеи из одной категории - добавляем звезду
+    if idea1_category and idea2_category and idea1_category == idea2_category:
+        stars = min(5, stars + 1)
+
+    return stars
+
+
+async def find_cofounders(
+    session: AsyncSession,
+    user_id: int
+) -> List[tuple[User, int]]:
+    """
+    Найти других соло-основателей для коллаборации
+
+    Returns:
+        Список кортежей (User, stars) отсортированный по совместимости
+    """
+    # Получаем текущего пользователя
+    current_user = await get_user_by_id(session, user_id)
+    if not current_user:
+        return []
+
+    # Ищем других соло-основателей
+    query = select(User).where(
+        and_(
+            User.user_type == UserType.COFOUNDER,
+            User.id != user_id
+        )
+    ).order_by(User.last_active.desc())
+
+    result = await session.execute(query)
+    cofounders = list(result.scalars().all())
+
+    # Рассчитываем совместимость для каждого
+    cofounders_with_stars = []
+    for cofounder in cofounders:
+        stars = calculate_compatibility(current_user, cofounder)
+        cofounders_with_stars.append((cofounder, stars))
+
+    # Сортируем по количеству звезд (от большего к меньшему)
+    cofounders_with_stars.sort(key=lambda x: x[1], reverse=True)
+
+    return cofounders_with_stars
+
+
+async def find_teams_for_participant(
+    session: AsyncSession,
+    participant_id: int
+) -> List[Team]:
+    """
+    Найти команды, которым нужны навыки соискателя
+
+    Returns:
+        Список команд, отсортированный по активности
+    """
+    # Получаем соискателя
+    participant = await get_user_by_id(session, participant_id)
+    if not participant:
+        return []
+
+    # Собираем все навыки соискателя
+    participant_skills = []
+    if participant.primary_skill:
+        participant_skills.append(participant.primary_skill.lower())
+    if participant.additional_skills:
+        additional = [s.strip().lower() for s in participant.additional_skills.split(',')]
+        participant_skills.extend(additional)
+
+    if not participant_skills:
+        return []
+
+    # Ищем команды, которым нужны эти навыки
+    query = select(Team).where(Team.status == TeamStatus.ACTIVE)
+    result = await session.execute(query)
+    all_teams = list(result.scalars().all())
+
+    # Фильтруем команды по навыкам
+    matching_teams = []
+    for team in all_teams:
+        if team.needed_skills:
+            needed_skills_lower = team.needed_skills.lower()
+            for skill in participant_skills:
+                # Простой поиск подстроки
+                skill_keywords = skill.split('(')[0].strip().lower()
+                if skill_keywords in needed_skills_lower:
+                    matching_teams.append(team)
+                    break
+
+    # Сортируем по дате обновления (более активные сверху)
+    matching_teams.sort(key=lambda t: t.updated_at, reverse=True)
+
+    return matching_teams
+
+
+async def count_teams_need_skill(
+    session: AsyncSession,
+    skill: str
+) -> int:
+    """
+    Подсчитать количество команд, которым нужен определенный навык
+    """
+    skill_lower = skill.lower()
+    skill_keywords = skill_lower.split('(')[0].strip()
+
+    query = select(Team).where(
+        and_(
+            Team.status == TeamStatus.ACTIVE,
+            Team.needed_skills.ilike(f"%{skill_keywords}%")
+        )
+    )
+    result = await session.execute(query)
+    teams = list(result.scalars().all())
+
+    return len(teams)
