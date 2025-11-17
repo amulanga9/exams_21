@@ -1,6 +1,13 @@
 #!/bin/bash
 
 # Test for print_bits
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for print_bits
 SOURCE="./answers/print_bits.c"
 TEST_MAIN="./build/print_bits_main.c"
 BINARY="./build/print_bits"
@@ -17,7 +24,7 @@ int main(void)
 EOF
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1
@@ -42,7 +49,7 @@ int main(void)
 }
 EOF
 
-gcc -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
 output=$("$BINARY")
 expected="11111111"
 if [ "$output" != "$expected" ]; then
@@ -61,7 +68,7 @@ int main(void)
 }
 EOF
 
-gcc -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
 output=$("$BINARY")
 expected="00000000"
 if [ "$output" != "$expected" ]; then

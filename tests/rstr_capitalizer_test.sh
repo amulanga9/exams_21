@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # Test for rstr_capitalizer
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for rstr_capitalizer
 SOURCE="./answers/rstr_capitalizer.c"
 BINARY="./build/rstr_capitalizer"
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

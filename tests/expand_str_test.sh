@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # Test for expand_str
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for expand_str
 SOURCE="./answers/expand_str.c"
 BINARY="./build/expand_str"
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

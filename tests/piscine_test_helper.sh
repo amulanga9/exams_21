@@ -2,6 +2,13 @@
 
 # Piscine Test Helper Functions
 # For testing programs that use stdin/stdout
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || {
+    export CC="gcc"
+    export CFLAGS="-Wall -Wextra -Werror"
+}
 
 # Test a piscine program with stdin input
 # Usage: test_piscine_program "input_string" "expected_output" "test_description"
@@ -28,16 +35,16 @@ test_piscine_program() {
     fi
 }
 
-# Compile piscine source
+# Compile piscine source (Verter 2025: using CLANG)
 compile_piscine_source() {
     local source="$1"
     local binary="$2"
     local math_lib="$3"
 
     if [ "$math_lib" = "yes" ]; then
-        gcc -Wall -Wextra -Werror "$source" -o "$binary" -lm 2>&1
+        $CC $CFLAGS "$source" -o "$binary" -lm 2>&1
     else
-        gcc -Wall -Wextra -Werror "$source" -o "$binary" 2>&1
+        $CC $CFLAGS "$source" -o "$binary" 2>&1
     fi
 
     return $?

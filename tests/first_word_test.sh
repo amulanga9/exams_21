@@ -1,16 +1,20 @@
 #!/bin/bash
 
 # Test for first_word
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
 
 # Use dynamic source file if provided, otherwise use default
 SOURCE="${CURRENT_SOURCE_FILE:-./answers/first_word.c}"
 BINARY="./build/first_word"
 
-# Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+# Compile with Verter standard compiler (CLANG)
+$CC $CFLAGS "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed:"
-    gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>&1
+    $CC $CFLAGS "$SOURCE" -o "$BINARY" 2>&1
     exit 1
 fi
 

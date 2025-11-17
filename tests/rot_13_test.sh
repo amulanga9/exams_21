@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # Test for rot_13
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for rot_13
 SOURCE="./answers/rot_13.c"
 BINARY="./build/rot_13"
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

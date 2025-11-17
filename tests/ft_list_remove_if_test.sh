@@ -1,6 +1,13 @@
 #!/bin/bash
 
 # Test for ft_list_remove_if
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for ft_list_remove_if
 SOURCE="./answers/ft_list_remove_if.c"
 TEST_MAIN="./build/ft_list_remove_if_main.c"
 BINARY="./build/ft_list_remove_if"
@@ -59,7 +66,7 @@ int main(void)
 EOF
 
 # Compile
-gcc -Wall -Wextra -Werror -I./answers "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror -I./answers "$SOURCE" "$TEST_MAIN" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

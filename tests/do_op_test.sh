@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # Test for do_op
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for do_op
 SOURCE="./answers/do_op.c"
 BINARY="./build/do_op"
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

@@ -1,11 +1,18 @@
 #!/bin/bash
 
 # Test for add_prime_sum
+# Verter 2025 compliant
+
+# Load Verter configuration
+source ./test_config.sh 2>/dev/null || true
+
+
+# Test for add_prime_sum
 SOURCE="./answers/add_prime_sum.c"
 BINARY="./build/add_prime_sum"
 
 # Compile
-gcc -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
+$CC $CFLAGS -Wall -Wextra -Werror "$SOURCE" -o "$BINARY" 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "Compilation failed"
     exit 1

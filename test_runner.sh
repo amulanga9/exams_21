@@ -2,6 +2,14 @@
 
 # School 21 Verter-like Test Runner
 # Automatically tests all C assignments from student submissions
+# Updated for Verter 2025 compliance
+
+# Load Verter 2025 configuration
+source ./test_config.sh 2>/dev/null || {
+    echo "Warning: test_config.sh not found, using defaults"
+    export CC="gcc"
+    export CFLAGS="-Wall -Wextra -Werror"
+}
 
 # Colors for output
 RED='\033[0;31m'
@@ -42,11 +50,16 @@ print_header() {
     echo -e "${CYAN}╔═══════════════════════════════════════════════════════╗${NC}"
     echo -e "${CYAN}║                                                       ║${NC}"
     echo -e "${CYAN}║       ${BLUE}🎓 School 21 Verter Auto-Checker 🎓${CYAN}        ║${NC}"
+    echo -e "${CYAN}║              ${GREEN}2025 Compliance Edition${CYAN}             ║${NC}"
     echo -e "${CYAN}║                                                       ║${NC}"
     echo -e "${CYAN}╚═══════════════════════════════════════════════════════╝${NC}"
     echo ""
-    echo -e "${MAGENTA}Mode: ${NC}Testing student submissions from ${YELLOW}${SUBMISSIONS_DIR}${NC}"
-    echo -e "${MAGENTA}Date: ${NC}$(date '+%Y-%m-%d %H:%M:%S')"
+    echo -e "${MAGENTA}Mode:     ${NC}Testing student submissions from ${YELLOW}${SUBMISSIONS_DIR}${NC}"
+    echo -e "${MAGENTA}Compiler: ${NC}${GREEN}${CC}${NC} ${CFLAGS}"
+    echo -e "${MAGENTA}Date:     ${NC}$(date '+%Y-%m-%d %H:%M:%S')"
+    if [ "$ENABLE_MEMORY_CHECK" = "true" ]; then
+        echo -e "${MAGENTA}Memory:   ${NC}${GREEN}✓ Enabled${NC} (${MEM_CHECKER%%\ *})"
+    fi
     echo ""
 }
 
